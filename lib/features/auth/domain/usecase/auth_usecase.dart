@@ -1,11 +1,30 @@
+import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
+import 'package:foodopia/features/auth/data/DTO/user.dart';
 import 'package:foodopia/features/auth/data/repository/auth_repository.dart';
+import 'package:foodopia/features/auth/data/repository/db_repository.dart';
+import 'package:foodopia/features/auth/domain/entity/user_entity.dart';
 
 class AuthUsecase{
   final AuthRepository authRepository = AuthRepository();
-  Future<User> performRegisteration(String email, String password, String name) async {
+  final DbRepository dbRepository = DbRepository();
+
+  Future performRegisteration(UserEntity userEntity) async {
     try{
-      return await authRepository.registerUser(email, password, name);
+      authRepository.registerUser(userEntity.email!, userEntity.password!, userEntity.name!).then((value) async{
+        AppUser user = AppUser(
+          userId: value.$id,
+          profileId: ID.unique(),
+          name: value.name,
+          email: value.email,
+          avatarUrl: "",
+          bio: "",
+          createdAt: DateTime.now().microsecondsSinceEpoch.toString(),
+          updatedAt: DateTime.now().microsecondsSinceEpoch.toString(),
+        );
+
+        await dbRepository.addData(user);
+      });
     }catch (e){
       throw e.toString();
     }

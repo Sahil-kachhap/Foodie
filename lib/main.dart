@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:foodopia/core/data/appwrite_client.dart';
 import 'package:foodopia/features/auth/presentation/bloc/auth/auth_bloc.dart';
 import 'package:foodopia/features/auth/presentation/login_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +29,9 @@ class MyApp extends StatelessWidget {
         title: 'Foodopia',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          textTheme: GoogleFonts.poppinsTextTheme(
+            Theme.of(context).textTheme,
+          ),
           useMaterial3: true,
         ),
         home: const LoginScreen(),
