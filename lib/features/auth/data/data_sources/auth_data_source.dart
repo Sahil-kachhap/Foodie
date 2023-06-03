@@ -29,6 +29,11 @@ class AuthDataSource {
     }
   }
 
+  Future<User> getCurrentUser() async{
+    final user = await account.get();
+    return user;
+  }
+
   // login user
   Future<Session> login(String email, String password){
     try {

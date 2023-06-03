@@ -12,6 +12,10 @@ class AuthRepository{
     }
   }
 
+  Future<User> getCurrentLoggedInUser() async{
+    return await authDataSource.getCurrentUser();
+  }
+
   Future<Session> loginUser(String email, String password) async{
     try{
       return await authDataSource.login(email, password);

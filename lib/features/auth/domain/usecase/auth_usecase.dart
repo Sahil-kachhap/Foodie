@@ -9,7 +9,8 @@ class AuthUsecase{
   final AuthRepository authRepository = AuthRepository();
   final DbRepository dbRepository = DbRepository();
 
-  Future performRegisteration(UserEntity userEntity) async {
+  Future<UserEntity> performRegisteration(UserEntity userEntity) async {
+    String? userId;
     try{
       authRepository.registerUser(userEntity.email!, userEntity.password!, userEntity.name!).then((value) async{
         AppUser user = AppUser(
@@ -24,10 +25,13 @@ class AuthUsecase{
         );
 
         await dbRepository.addData(user);
+        userId = user.userId;
       });
-    }catch (e){
+    }on AppwriteException catch (e){
       throw e.toString();
     }
+    userEntity.userId = userId;
+    return userEntity;
   }
 
   Future<Session> performLogin(String email, String password) async {

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:foodopia/features/post/domain/entities/post_entity.dart';
 
 class RecipieFeedPost extends StatelessWidget {
+  final PostEntity? postEntity;
   const RecipieFeedPost({
+    this.postEntity,
     super.key,
   });
 
@@ -11,35 +14,35 @@ class RecipieFeedPost extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.all(12.0),
+         Padding(
+          padding: const EdgeInsets.all(12.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
                 children: [
-                  CircleAvatar(
+                  const CircleAvatar(
                     radius: 18,
                     backgroundImage: AssetImage("assets/me.jpg"),
                     backgroundColor: Colors.amber,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
                   Text(
-                    "sahilkachhap",
-                    style: TextStyle(
+                    postEntity?.userName ?? "No Data",
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
                   ),
                 ],
               ),
-              Icon(Icons.more_horiz),
+              const Icon(Icons.more_horiz),
             ],
           ),
         ),
-        Image.asset("assets/recipie.jpg"),
+        Image.memory(postEntity!.file),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -68,8 +71,8 @@ class RecipieFeedPost extends StatelessWidget {
         const Text(
           "\t8 likes",
         ),
-        const Text("\tThis is a recipie of a cake"),
-        const Text("\t5 minutes ago"),
+        Text("\t${postEntity?.caption ?? "No Data"}"),
+        Text("\t${postEntity?.timeAgo ?? "No Data"}"),
       ],
     );
   }

@@ -6,7 +6,15 @@ class AuthInitial extends AuthState {}
 
 class AuthLoading extends AuthState {}
 
-class RegistrationSuccess extends AuthState {}
+class RegistrationSuccess extends AuthState {
+  final UserEntity userEntity;
+
+  Map<String, dynamic> toJson(){
+    return {'userEntity': userEntity};
+  }
+
+  RegistrationSuccess({required this.userEntity});
+}
 
 class RegistrationFailure extends AuthState {
   final String message;

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:foodopia/features/post/domain/entities/post_entity.dart';
+import 'package:foodopia/features/post/presentation/bloc/post/post_bloc.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -10,9 +13,15 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
+  void initState() {
+    BlocProvider.of<PostBloc>(context).add(GetUserProfileData());
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.transparent,
@@ -25,12 +34,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
           ),
-          body: const SafeArea(
+          body: SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Padding(
+                const Padding(
                   padding: EdgeInsets.only(left: 12.0),
                   child: Row(
                     children: [
@@ -72,7 +81,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ],
                   ),
                 ),
-                Padding(
+                const Padding(
                   padding: EdgeInsets.only(left: 12.0),
                   child: Text(
                     "sahilkachhap",
@@ -82,7 +91,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                 ),
-                Padding(
+                const Padding(
                   padding: EdgeInsets.only(left: 12.0),
                   child: Text(
                     "Lead your life from the front",
@@ -93,10 +102,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
-                TabBar(
+                const TabBar(
                   indicatorSize: TabBarIndicatorSize.tab,
                   indicatorColor: Colors.black,
                   labelColor: Colors.black,
@@ -108,39 +117,110 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Tab(
                       icon: Icon(Icons.video_library),
                     ),
+                    Tab(
+                      icon: Icon(FontAwesomeIcons.bookmark),
+                    ),
                   ],
                 ),
-                Expanded(
-                  child: TabBarView(children: [
-                    Center(
-                        child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.camera_alt_outlined,
-                          size: 100,
-                        ),
-                        Text("No Posts Yet"),
-                      ],
-                    )),
-                    Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            FontAwesomeIcons.video,
-                            size: 100,
+                BlocConsumer<PostBloc, PostState>(
+                  listener: (context, state) {},
+                  builder: (context, state) {
+                    if (state is ProfilePostsLoadedState) {
+                      return Expanded(
+                        child: TabBarView(children: [
+                          state.posts.isNotEmpty
+                              ? ShowImageGrid(
+                                  posts: state.posts,
+                                )
+                              : const NoPostAvailable(),
+                          const Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  FontAwesomeIcons.video,
+                                  size: 100,
+                                ),
+                                Text("No Posts Yet"),
+                              ],
+                            ),
                           ),
-                          Text("No Posts Yet"),
-                        ],
-                      ),
-                    ),
-                  ]),
+                          const Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  FontAwesomeIcons.bookmark,
+                                  size: 100,
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text("No Bookmarks Yet"),
+                              ],
+                            ),
+                          ),
+                        ]),
+                      );
+                    }
+                    return const Center(child: CircularProgressIndicator());
+                  },
                 )
               ],
             ),
           )),
     );
+  }
+}
+
+class NoPostAvailable extends StatelessWidget {
+  const NoPostAvailable({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.camera_alt_outlined,
+              size: 100,
+            ),
+            Text("No Posts Yet"),
+          ],
+        ),
+      );
+  }
+}
+
+class ShowImageGrid extends StatelessWidget {
+  final List<PostEntity>? posts;
+  const ShowImageGrid({
+    this.posts,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.builder(
+        //physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          mainAxisSpacing: 2,
+          crossAxisSpacing: 2,
+        ),
+        itemCount: posts!.length,
+        itemBuilder: (context, index) {
+          return Container(
+            color: Colors.blue,
+            child: Image.memory(
+              posts![index].file,
+              fit: BoxFit.cover,
+            ),
+          );
+        });
   }
 }
 
