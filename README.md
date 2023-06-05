@@ -1,6 +1,8 @@
 # foodopia
 
 A new Flutter project.
+![Colorful Planner Mobile App Promotion Instagram Post](https://github.com/Sahil-kachhap/Foodopia/assets/54017876/9fc66cca-2f14-480c-9626-e2448ac2188c)
+
 
 ## Getting Started
 
