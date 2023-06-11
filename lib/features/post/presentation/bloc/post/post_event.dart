@@ -14,4 +14,6 @@ class CreatePost extends PostEvent {
 
 class GetPost extends PostEvent {}
 
-class GetUserProfileData extends PostEvent {}
+class GetUserProfileData extends PostEvent {
+  
+}

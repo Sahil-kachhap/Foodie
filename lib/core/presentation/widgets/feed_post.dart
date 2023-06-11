@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:foodopia/core/presentation/widgets/comments_screen.dart';
+import 'package:foodopia/core/presentation/widgets/like_animation.dart';
 import 'package:foodopia/features/post/domain/entities/post_entity.dart';
 
-class RecipieFeedPost extends StatelessWidget {
+class RecipieFeedPost extends StatefulWidget {
   final PostEntity? postEntity;
   const RecipieFeedPost({
     this.postEntity,
     super.key,
   });
 
+  @override
+  State<RecipieFeedPost> createState() => _RecipieFeedPostState();
+}
+
+class _RecipieFeedPostState extends State<RecipieFeedPost> {
+  bool isLikeAnimating = false;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -30,7 +38,7 @@ class RecipieFeedPost extends StatelessWidget {
                     width: 10,
                   ),
                   Text(
-                    postEntity?.userName ?? "No Data",
+                    widget.postEntity?.userName ?? "No Data",
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -42,19 +50,56 @@ class RecipieFeedPost extends StatelessWidget {
             ],
           ),
         ),
-        Image.memory(postEntity!.file),
+        GestureDetector(
+          onDoubleTap: () {
+            setState(() {
+              isLikeAnimating = true;
+            });
+          },
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Image.memory(widget.postEntity!.file),
+               AnimatedOpacity(
+                  duration: const Duration(milliseconds: 200,),
+                  opacity: isLikeAnimating ? 1.0 : 0.0,
+                 child: LikeAnimantion(
+                  isAnimating: isLikeAnimating,
+                  duration: const Duration(milliseconds: 400,),
+                  onEnd: (){
+                    setState(() {
+                      isLikeAnimating = false;
+                    });
+                  },
+                  child: const Icon(Icons.favorite, color: Colors.white, size: 100.0,),
+                ),
+               ),
+            ],
+          ),
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
               children: [
-                IconButton(
-                  icon: const Icon(FontAwesomeIcons.heart),
-                  onPressed: () {},
+                LikeAnimantion(
+                  isAnimating: false,
+                  smallLike: true,
+                  child: IconButton(
+                    icon: const Icon(FontAwesomeIcons.heart),
+                    onPressed: () {},
+                  ),
                 ),
                 IconButton(
                   icon: const Icon(FontAwesomeIcons.comment),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CommentScreen(),
+                      ),
+                    );
+                  },
                 ),
                 IconButton(
                   icon: const Icon(FontAwesomeIcons.paperPlane),
@@ -71,8 +116,8 @@ class RecipieFeedPost extends StatelessWidget {
         const Text(
           "\t8 likes",
         ),
-        Text("\t${postEntity?.caption ?? "No Data"}"),
-        Text("\t${postEntity?.timeAgo ?? "No Data"}"),
+        Text("\t${widget.postEntity?.caption ?? "No Data"}"),
+        Text("\t${widget.postEntity?.timeAgo ?? "No Data"}"),
       ],
     );
   }

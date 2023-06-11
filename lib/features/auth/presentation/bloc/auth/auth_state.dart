@@ -29,3 +29,9 @@ class LoginFailure extends AuthState {
 
   LoginFailure({required this.message});
 }
+
+class RedirectToScreen extends AuthState {
+  final bool authenticated;
+
+  RedirectToScreen({required this.authenticated});
+}

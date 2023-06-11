@@ -1,5 +1,6 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
+import 'package:cache_manager/cache_manager.dart';
 import 'package:foodopia/features/auth/data/DTO/user.dart';
 import 'package:foodopia/features/auth/data/repository/auth_repository.dart';
 import 'package:foodopia/features/auth/data/repository/db_repository.dart';
@@ -34,9 +35,10 @@ class AuthUsecase{
     return userEntity;
   }
 
-  Future<Session> performLogin(String email, String password) async {
+  Future<void> performLogin(String email, String password) async {
     try{
-      return await authRepository.loginUser(email, password);
+       Session session = await authRepository.loginUser(email, password);
+       WriteCache.setString(key: "session", value: session.userId);
     }catch (e){
       throw e.toString();
     }

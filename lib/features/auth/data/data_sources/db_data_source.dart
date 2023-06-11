@@ -1,6 +1,6 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:foodopia/core/data/appwrite_client.dart';
-import 'package:foodopia/core/utils/constans.dart';
+import 'package:foodopia/core/utils/constants.dart';
 import 'package:foodopia/features/auth/data/DTO/user.dart';
 
 class DbDataSource{

@@ -2,11 +2,10 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:foodopia/core/presentation/profile_screen.dart';
 import 'package:foodopia/core/presentation/recipie_feeds_screen.dart';
-import 'package:foodopia/features/post/presentation/bloc/post/post_bloc.dart';
+import 'package:foodopia/core/presentation/reels_screen.dart';
 import 'package:image_picker/image_picker.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -18,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int currentIndex = 0;
+  late PageController pageController;
   File? image;
   Future pickImage() async {
     try {
@@ -30,26 +30,47 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+
   List<Widget> screens = [
     const RecipieFeeds(),
-    const RecipieFeeds(),
+    const ReelsScreen(),
     const RecipieFeeds(),
     const ProfileScreen(),
   ];
 
+  void navigateToPage(int page) {
+    pageController.jumpToPage(page);
+  }
+
+  @override
+  void initState() {
+    pageController = PageController();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: screens[currentIndex],
+      body: PageView(
+        physics: const NeverScrollableScrollPhysics(),
+        controller: pageController,
+        onPageChanged: (index) {
+          setState(() {
+            currentIndex = index;
+          });
+        },
+        children: screens,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         showUnselectedLabels: false,
         currentIndex: currentIndex,
         showSelectedLabels: false,
         onTap: (index) {
-          setState(() {
-            currentIndex = index;
-          });
+          navigateToPage(index);
+          // setState(() {
+          //   currentIndex = index;
+          // });
         },
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

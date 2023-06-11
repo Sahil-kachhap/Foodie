@@ -1,5 +1,4 @@
 import 'package:foodopia/core/utils/get_times_ago.dart';
-import 'package:foodopia/features/post/data/DTO/post.dart';
 import 'package:foodopia/features/post/data/repository/post_repository.dart';
 import 'package:foodopia/features/post/domain/entities/post_entity.dart';
 

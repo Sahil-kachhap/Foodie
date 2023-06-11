@@ -1,3 +1,4 @@
+import 'package:cache_manager/cache_manager.dart';
 import 'package:foodopia/features/auth/domain/entity/user_entity.dart';
 import 'package:foodopia/features/auth/domain/usecase/auth_usecase.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -35,6 +36,20 @@ class AuthBloc extends HydratedBloc<AuthEvent, AuthState> {
         }
       },
     );
+    on<RedirectToHomeEvent>((event, emit) async {
+      bool? isUserAuthenicated;
+      await CacheManagerUtils.conditionalCache(
+          key: "session",
+          valueType: ValueType.StringValue,
+          actionIfNull: () {
+            isUserAuthenicated = false;
+          },
+          actionIfNotNull: () {
+            isUserAuthenicated = true;
+          }).whenComplete(
+        () => emit(RedirectToScreen(authenticated: isUserAuthenicated!),),
+      );
+    });
   }
 
   @override

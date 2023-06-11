@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:foodopia/features/explore/presentation/explore_user_view.dart';
 import 'package:foodopia/features/post/presentation/bloc/post/post_bloc.dart';
 import 'package:foodopia/features/post/presentation/create_post.dart';
 import 'package:foodopia/core/presentation/widgets/feed_post.dart';
@@ -17,7 +18,7 @@ class RecipieFeeds extends StatefulWidget {
   State<RecipieFeeds> createState() => _RecipieFeedsState();
 }
 
-class _RecipieFeedsState extends State<RecipieFeeds> {
+class _RecipieFeedsState extends State<RecipieFeeds> with AutomaticKeepAliveClientMixin<RecipieFeeds>{
   File? image;
 
   Future pickImage() async {
@@ -40,6 +41,7 @@ class _RecipieFeedsState extends State<RecipieFeeds> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       body: SafeArea(
         child: NestedScrollView(
@@ -68,6 +70,17 @@ class _RecipieFeedsState extends State<RecipieFeeds> {
                       });
                     },
                     icon: const Icon(FontAwesomeIcons.squarePlus),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ExploreUser(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(FontAwesomeIcons.magnifyingGlass),
                   ),
                 ],
               )
@@ -104,4 +117,7 @@ class _RecipieFeedsState extends State<RecipieFeeds> {
       ),
     );
   }
+  
+  @override
+  bool get wantKeepAlive => true;
 }

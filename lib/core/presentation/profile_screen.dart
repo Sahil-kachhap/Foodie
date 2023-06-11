@@ -1,17 +1,22 @@
+import 'package:cache_manager/cache_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:foodopia/core/data/appwrite_client.dart';
+import 'package:foodopia/features/explore/domain/entity/search_entity.dart';
 import 'package:foodopia/features/post/domain/entities/post_entity.dart';
 import 'package:foodopia/features/post/presentation/bloc/post/post_bloc.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  final SearchEntity? searchEntity;
+  const ProfileScreen({this.searchEntity, super.key});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends State<ProfileScreen>
+    with AutomaticKeepAliveClientMixin<ProfileScreen> {
   @override
   void initState() {
     BlocProvider.of<PostBloc>(context).add(GetUserProfileData());
@@ -20,45 +25,61 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return DefaultTabController(
       length: 3,
       child: Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
-            title: const Text(
-              "sahilkachhap",
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            title: widget.searchEntity == null
+                ? CacheManagerUtils.cacheTextBuilder(
+                    textStyle: const TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    cacheKey: "name",
+                  )
+                : Text(widget.searchEntity!.name!),
           ),
           body: SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 12.0),
+                Padding(
+                  padding: const EdgeInsets.only(left: 12.0),
                   child: Row(
                     children: [
                       Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          CircleAvatar(
-                            radius: 40,
-                            backgroundImage: AssetImage("assets/me.jpg"),
-                          ),
-                          SizedBox(
+                          FutureBuilder(
+                              future: AppWriteClient()
+                                  .getAvatarsInstance
+                                  .getInitials(
+                                      name: widget.searchEntity != null
+                                          ? widget.searchEntity!.name!
+                                          : null),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return CircleAvatar(
+                                      radius: 40,
+                                      backgroundImage:
+                                          MemoryImage(snapshot.data!));
+                                }
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              }),
+                          const SizedBox(
                             height: 10,
                           ),
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 25,
                       ),
-                      Flexible(
+                      const Flexible(
                         fit: FlexFit.loose,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -81,15 +102,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ],
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 12.0),
-                  child: Text(
-                    "sahilkachhap",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                    ),
-                  ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 12.0),
+                  child: widget.searchEntity == null
+                      ? CacheManagerUtils.cacheTextBuilder(
+                          textStyle: const TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          cacheKey: "name",
+                        )
+                      : Text(widget.searchEntity!.name!),
                 ),
                 const Padding(
                   padding: EdgeInsets.only(left: 12.0),
@@ -171,6 +194,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           )),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class NoPostAvailable extends StatelessWidget {
@@ -181,17 +207,17 @@ class NoPostAvailable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.camera_alt_outlined,
-              size: 100,
-            ),
-            Text("No Posts Yet"),
-          ],
-        ),
-      );
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.camera_alt_outlined,
+            size: 100,
+          ),
+          Text("No Posts Yet"),
+        ],
+      ),
+    );
   }
 }
 

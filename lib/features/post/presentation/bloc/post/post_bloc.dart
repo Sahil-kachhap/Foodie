@@ -1,15 +1,15 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dart:developer';
 import 'package:foodopia/features/auth/domain/usecase/get_user_details.dart';
-import 'package:foodopia/features/post/data/DTO/post.dart';
 import 'package:foodopia/features/post/domain/entities/post_entity.dart';
 import 'package:foodopia/features/post/domain/usecases/get_posts.dart';
 import 'package:foodopia/features/post/domain/usecases/get_profile_posts.dart';
 import 'package:foodopia/features/post/domain/usecases/upload_post.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 part 'post_event.dart';
 part 'post_state.dart';
 
-class PostBloc extends Bloc<PostEvent, PostState> {
+class PostBloc extends HydratedBloc<PostEvent, PostState> {
   final UploadPost uploadPost = UploadPost();
   final GetPosts getPost = GetPosts();
   final GetUserDetails getUserData = GetUserDetails();
@@ -44,5 +44,28 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         emit(PostCreationErrorState(message: e.toString()));
       }
     });
+  }
+  
+  @override
+  PostState? fromJson(Map<String, dynamic> json) {
+    try {
+      final posts =(json['posts'] as List<dynamic>).map((e) => PostEntity.fromJson(e)).toList();
+
+      return PostsLoadedState(posts: posts);
+    } catch (e) {
+      log(e.toString());
+      return null;
+    }
+  }
+  
+  @override
+  Map<String, dynamic>? toJson(PostState state) {
+    if(state is PostsLoadedState){
+      return {
+        "posts": state.posts.map((e) => e.toJson()).toList(),
+      };
+    }else{
+      return null;
+    }
   }
 }

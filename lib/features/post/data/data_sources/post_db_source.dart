@@ -2,7 +2,7 @@ import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
 import 'package:flutter/services.dart';
 import 'package:foodopia/core/data/appwrite_client.dart';
-import 'package:foodopia/core/utils/constans.dart';
+import 'package:foodopia/core/utils/constants.dart';
 import 'package:foodopia/features/post/data/DTO/post.dart';
 
 class PostRemoteDataSource{
@@ -49,6 +49,14 @@ class PostRemoteDataSource{
         collectionId: postCollectionId,
       );
       return posts.documents;
+    }on AppwriteException catch(e){
+      throw e.toString();
+    }
+  }
+
+  Stream<RealtimeMessage> getRealTimeUserPosts(){
+    try{
+      return appWriteClient.getRealtimeInstance.subscribe(['databases.$databaseId.collections.$postCollectionId.documents']).stream;
     }on AppwriteException catch(e){
       throw e.toString();
     }

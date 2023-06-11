@@ -23,3 +23,5 @@ class LoginUserEvent extends AuthEvent {
     required this.password,
   });
 }
+
+class RedirectToHomeEvent extends AuthEvent {}

@@ -21,14 +21,14 @@ class AppUser {
 
   factory AppUser.fromJson(Map<String, dynamic> json) {
     return AppUser(
-      userId: json['\$id'],
-      profileId: json['\$collection'],
+      userId: json['userId'],
+      profileId: json['profileId'],
       name: json['name'],
       email: json['email'],
       avatarUrl: json['avatarUrl'],
       bio: json['bio'],
-      createdAt: json['\$permissions']['\$created'],
-      updatedAt: json['\$permissions']['\$updated'],
+      createdAt: json['createdAt'],
+      updatedAt: json['updatedAt'],
     );
   }
 
