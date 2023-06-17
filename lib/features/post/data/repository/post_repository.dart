@@ -1,5 +1,6 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:flutter/services.dart';
+import 'package:foodopia/core/utils/constants.dart';
 import 'package:foodopia/features/post/data/DTO/post.dart';
 import 'package:foodopia/features/post/data/data_sources/post_db_source.dart';
 
@@ -10,6 +11,7 @@ class PostRepository {
     try {
       String uploadedFileId = await postRemoteDataSource.storePostFile(filePath, post.fileId);
       post.fileId = uploadedFileId;
+      post.fileUrl = imageUrl(uploadedFileId);
       await postRemoteDataSource.addPost(post);
     } on AppwriteException catch (e) {
       throw e.toString();
@@ -20,6 +22,14 @@ class PostRepository {
     try{
       final posts = await postRemoteDataSource.getAllUserPosts(username);
       return posts.map((e) => Post.fromJson(e.data)).toList();
+    }on AppwriteException catch(e){
+      throw e.toString();
+    }
+  }
+
+  updateLikesCount(Post post) async{
+    try{
+      await postRemoteDataSource.updateLikes(post);
     }on AppwriteException catch(e){
       throw e.toString();
     }

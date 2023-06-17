@@ -42,6 +42,21 @@ class PostRemoteDataSource{
     }
   }
 
+  updateLikes(Post post) async{
+    try{
+      await database.updateDocument(
+        databaseId: databaseId,
+        collectionId: postCollectionId,
+        documentId: post.id!,
+        data: {
+          'likes': post.likes,
+        },
+      );
+    }on AppwriteException catch(e){
+      throw e.toString();
+    }
+  } 
+
   Future<List<Document>> getAllPosts() async{
     try{
       final posts = await database.listDocuments(
@@ -53,15 +68,6 @@ class PostRemoteDataSource{
       throw e.toString();
     }
   }
-
-  Stream<RealtimeMessage> getRealTimeUserPosts(){
-    try{
-      return appWriteClient.getRealtimeInstance.subscribe(['databases.$databaseId.collections.$postCollectionId.documents']).stream;
-    }on AppwriteException catch(e){
-      throw e.toString();
-    }
-  }
-
   Future<List<Document>> getAllUserPosts(String username) async{
     try{
       final posts = await database.listDocuments(

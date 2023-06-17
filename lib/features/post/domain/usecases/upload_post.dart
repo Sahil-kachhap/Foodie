@@ -1,4 +1,5 @@
 import 'package:appwrite/appwrite.dart';
+import 'package:foodopia/core/utils/constants.dart';
 import 'package:foodopia/features/auth/data/repository/auth_repository.dart';
 import 'package:foodopia/features/post/data/DTO/post.dart';
 import 'package:foodopia/features/post/data/repository/post_repository.dart';
@@ -14,10 +15,12 @@ class UploadPost{
       Post post = Post(
         userId: userId,
         username: username,
-        postId: ID.unique(),
         caption: caption,
         contentType: filePath,
         fileId: ID.unique(),
+        fileUrl: imageUrl(ID.unique()),
+        likes: [],
+        commentIds: [],
         createdAt: DateTime.now().microsecondsSinceEpoch.toString(),
         updatedAt: DateTime.now().microsecondsSinceEpoch.toString(),
       );
