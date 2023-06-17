@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:foodopia/core/presentation/chat_screen.dart';
+import 'package:foodopia/core/presentation/notification_screen.dart';
 import 'package:foodopia/core/presentation/profile_screen.dart';
 import 'package:foodopia/core/presentation/recipie_feeds_screen.dart';
 import 'package:foodopia/core/presentation/reels_screen.dart';
@@ -30,11 +32,11 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-
   List<Widget> screens = [
     const RecipieFeeds(),
     const ReelsScreen(),
-    const RecipieFeeds(),
+    const ChatScreen(),
+    const NotificationScreen(),
     const ProfileScreen(),
   ];
 
@@ -78,8 +80,12 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.video),
+            icon: Icon(FontAwesomeIcons.circlePlay),
             label: 'Reels',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(FontAwesomeIcons.paperPlane),
+            label: 'Chats',
           ),
           BottomNavigationBarItem(
             icon: Icon(FontAwesomeIcons.heart),
