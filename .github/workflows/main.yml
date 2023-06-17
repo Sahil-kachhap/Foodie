@@ -22,9 +22,9 @@ jobs:
         - name: Push to Releases
           uses: ncipollo/release-action@v1
           with:
-            artifacts: "build/app/outputs/flutter-apk/"
+            artifacts: "build/app/outputs/apk/release/*"
             tag: v1.0.${{github.run_number}}
-            # token: ${{secrets.TOKEN}}
+            token: ${{secrets.TOKEN}}
         # - name: Push to firebase app distribution
         #   uses: wzieba/Firebase-Distribution-Github-Action@v1
         #   with:
